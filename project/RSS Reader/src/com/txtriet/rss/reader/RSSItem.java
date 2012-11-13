@@ -38,12 +38,12 @@ public class RSSItem {
 		this._pubdate = _pubdate;
 	}
 	
-	public String toString() {
-		// limit how much text you display
-		if (_title.length() > 42) {
-			return _title.substring(0, 42) + "...";
-		}
-		return _title;
-	}
+	// public String toString() {
+	// // limit how much text you display
+	// if (_title.length() > 42) {
+	// return _title.substring(0, 42) + "...";
+	// }
+	// return _title;
+	// }
 
 }

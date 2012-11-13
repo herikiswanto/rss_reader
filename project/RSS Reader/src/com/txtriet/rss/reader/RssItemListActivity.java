@@ -10,17 +10,21 @@ import org.xml.sax.XMLReader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class RssItemListActivity extends Activity implements
 		OnItemClickListener {
@@ -109,9 +113,9 @@ public class RssItemListActivity extends Activity implements
 		}
 		feedtitle.setText(feed.getTitle());
 		feedpubdate.setText(feed.getPubDate());
-		ArrayAdapter<RSSItem> adapter = new ArrayAdapter<RSSItem>(this,
-				android.R.layout.simple_list_item_1, feed.getAllItems());
-		itemlist.setAdapter(adapter);
+//		ArrayAdapter<RSSItem> adapter = new ArrayAdapter<RSSItem>(this,
+//				android.R.layout.simple_list_item_1, feed.getAllItems());
+		itemlist.setAdapter(new FeedAdapter(this));
 		itemlist.setSelection(0);
 		itemlist.setOnItemClickListener(this);
 	}
@@ -124,5 +128,31 @@ public class RssItemListActivity extends Activity implements
 		i.putExtra(FEED_LINK, feed.getItem(position).getLink());
 		startActivity(i);
 	}
+	
+	class FeedAdapter extends ArrayAdapter<RSSItem>{
+		Activity context;
 
+		public FeedAdapter(Activity context) {
+			super(context, R.layout.rss_item_row, feed.getAllItems());
+			this.context = context;
+		}
+		
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			final LayoutInflater inflater = context.getLayoutInflater();
+			final View row = inflater.inflate(R.layout.rss_item_row, null);
+			final int pos = position;
+			final TextView title = (TextView) row.findViewById(R.id.tvTitle);
+			final TextView descriptions = (TextView) row.findViewById(R.id.tvDescription);
+			//final WebView descriptions = (WebView) row.findViewById(R.id.wvDescription);
+			final TextView date = (TextView) row.findViewById(R.id.tvDate);	
+				
+			title.setText(feed.getItem(pos).getTitle());
+			descriptions.setText(Html.fromHtml(feed.getItem(pos).getDescription()));
+			//descriptions.loadData(Html.toHtml(Html.fromHtml(feed.getItem(pos).getDescription())), "text/html", "UTF-8");
+			date.setText(feed.getItem(pos).getPubDate());
+			return row;
+		}
+	}
 }
