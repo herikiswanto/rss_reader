@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.example.rss.reader;
+package com.txtriet.rss.reader;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;
