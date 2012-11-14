@@ -6,18 +6,31 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
-public class RssReaderActivity extends ListActivity {
+public class RssReaderActivity extends ListActivity implements OnClickListener {
 	public static final String RSS_LINK = "rss_link";
+	
 	private RssDBAdapter dbHelper;
 	private SimpleCursorAdapter dataAdapter;
-
+	
+	private EditText txtRss;
+	private Button btnGo;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rss_reader);
+		
+		txtRss = (EditText) findViewById(R.id.txtRss);
+		btnGo = (Button) findViewById(R.id.btnGo);
+		
+		btnGo.setOnClickListener(this);
 		
 		dbHelper = new RssDBAdapter(this);
 		dbHelper.open();
@@ -38,10 +51,8 @@ public class RssReaderActivity extends ListActivity {
 		Cursor cursor = (Cursor) l.getItemAtPosition(position);
 
 		String link = cursor.getString(cursor.getColumnIndexOrThrow("link"));
-
-		Intent i = new Intent(RssReaderActivity.this, RssItemListActivity.class);
-		i.putExtra(RSS_LINK, link);
-		startActivity(i);
+		
+		txtRss.setText(link);
 	}
 
 	private void displayListView() {
@@ -60,5 +71,14 @@ public class RssReaderActivity extends ListActivity {
 		
 		this.setListAdapter(dataAdapter);
 		
+	}
+
+	@Override
+	public void onClick(View v) {
+		String link = txtRss.getText().toString();
+
+		Intent i = new Intent(RssReaderActivity.this, RssItemListActivity.class);
+		i.putExtra(RSS_LINK, link);
+		startActivity(i);
 	}
 }
